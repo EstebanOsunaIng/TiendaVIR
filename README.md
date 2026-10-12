@@ -2,6 +2,10 @@
 
 SaaS multi-tenant de gestión de inventario para tiendas de ropa: panel administrativo privado por tienda y catálogo público en `/tienda/[slug]`, con aislamiento de datos por tienda vía RLS en Supabase/Postgres.
 
+## Identidad visual — "TiendaVit Studio"
+
+Paleta cálida y editorial (marfil/carbón/arena/verde profundo/terracota) definida como tokens CSS en `src/app/globals.css`, con Fraunces para titulares y Inter para todo lo funcional. El panel administrativo usa una barra lateral fija en escritorio y un menú deslizable en móvil; el catálogo público tiene encabezado con logo/búsqueda/carrito, una portada editorial (foto real si la tienda configuró `cover_image_url`, o una versión tipográfica si no) y pie de página con contacto. Componentes compartidos en `src/components/shared/` (`StatusBadge`, `EmptyState`) y `src/components/admin/`/`src/components/public/` para la navegación y el shell de cada experiencia.
+
 ## Stack
 
 - Next.js (App Router) + TypeScript estricto
