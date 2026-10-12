@@ -1,8 +1,30 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getPublicStore } from "@/lib/catalog/get-public-store";
 import { CartProvider } from "@/components/public/cart-context";
 import { CartLink } from "./cart-link";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const store = await getPublicStore(slug);
+  if (!store) return {};
+
+  const description = store.description ?? `Catálogo de ${store.name}.`;
+  return {
+    title: store.name,
+    description,
+    openGraph: {
+      title: store.name,
+      description,
+      images: store.logoUrl ? [store.logoUrl] : undefined,
+    },
+  };
+}
 
 export default async function TiendaPublicaLayout({
   children,

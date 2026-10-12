@@ -1,8 +1,47 @@
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getPublicStore } from "@/lib/catalog/get-public-store";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/currency";
 import { AddToCart } from "./add-to-cart";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; productId: string }>;
+}): Promise<Metadata> {
+  const { slug, productId } = await params;
+  const store = await getPublicStore(slug);
+  if (!store) return {};
+
+  const supabase = await createClient();
+  const { data: product } = await supabase
+    .from("products")
+    .select("name, description, base_price, product_images(storage_path, position)")
+    .eq("id", productId)
+    .eq("store_id", store.id)
+    .eq("is_published", true)
+    .single();
+
+  if (!product) return {};
+
+  const image = [...product.product_images].sort((a, b) => a.position - b.position)[0];
+  const imageUrl = image
+    ? supabase.storage.from("product-images").getPublicUrl(image.storage_path).data.publicUrl
+    : undefined;
+  const description =
+    product.description ?? `${product.name} — ${formatCurrency(product.base_price, store.currency)}`;
+
+  return {
+    title: product.name,
+    description,
+    openGraph: {
+      title: product.name,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
+  };
+}
 
 export default async function ProductoPublicoPage({
   params,
