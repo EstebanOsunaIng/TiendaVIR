@@ -49,7 +49,7 @@ export function SiteHeader({
 
         <form
           action={`/tienda/${storeSlug}`}
-          className="ml-auto hidden max-w-xs flex-1 items-center md:flex"
+          className="hidden max-w-xs flex-1 items-center md:flex"
         >
           <div className="relative w-full">
             <SearchIcon className="pointer-events-none absolute left-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
@@ -63,7 +63,9 @@ export function SiteHeader({
           </div>
         </form>
 
-        <CartLink storeSlug={storeSlug} />
+        <div className="ml-auto md:ml-0">
+          <CartLink storeSlug={storeSlug} />
+        </div>
       </div>
     </header>
   );

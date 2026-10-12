@@ -100,7 +100,7 @@ export function AddToCart({
                 disabled={variants.every((v) => v.size !== size || v.stock <= 0)}
                 aria-pressed={selected.size === size}
                 className={cn(
-                  "flex h-10 min-w-10 items-center justify-center rounded-lg border px-3 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40",
+                  "flex h-11 min-w-11 items-center justify-center rounded-lg border px-3 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40",
                   selected.size === size
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-input hover:border-foreground/30",
@@ -125,7 +125,7 @@ export function AddToCart({
                 disabled={variants.every((v) => v.color !== color || v.stock <= 0)}
                 aria-pressed={selected.color === color}
                 className={cn(
-                  "flex h-10 items-center justify-center rounded-lg border px-3 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40",
+                  "flex h-11 items-center justify-center rounded-lg border px-3 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-40",
                   selected.color === color
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-input hover:border-foreground/30",

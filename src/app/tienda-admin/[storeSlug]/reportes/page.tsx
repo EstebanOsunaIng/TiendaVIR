@@ -1,6 +1,10 @@
+import { BarChart3Icon, ReceiptIcon, TicketIcon, WalletIcon } from "lucide-react";
 import { requireStoreOwner } from "@/lib/auth/require-role";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { BarChart } from "@/components/admin/bar-chart";
+import { EmptyState } from "@/components/shared/empty-state";
 import { formatCurrency } from "@/lib/currency";
 
 export default async function ReportesPage({
@@ -47,51 +51,72 @@ export default async function ReportesPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-medium">Reportes financieros</h1>
+      <h1 className="font-heading text-xl">Reportes financieros</h1>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Ingresos totales</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <WalletIcon className="size-4 text-muted-foreground" />
+              Ingresos totales
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-medium">{formatCurrency(totalRevenue, context.currency)}</p>
+            <p className="font-heading text-2xl">{formatCurrency(totalRevenue, context.currency)}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Ventas totales</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <ReceiptIcon className="size-4 text-muted-foreground" />
+              Ventas totales
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-medium">{totalSales}</p>
+            <p className="font-heading text-2xl">{totalSales}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Ticket promedio</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TicketIcon className="size-4 text-muted-foreground" />
+              Ticket promedio
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-medium">{formatCurrency(averageSale, context.currency)}</p>
+            <p className="font-heading text-2xl">{formatCurrency(averageSale, context.currency)}</p>
           </CardContent>
         </Card>
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Ingresos por día (últimos 30 registrados)</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3Icon className="size-4 text-muted-foreground" />
+            Ingresos por día (últimos 30 registrados)
+          </CardTitle>
         </CardHeader>
-        <CardContent>
-          <ul className="flex flex-col gap-1 text-sm">
-            {last30Days.map(([day, revenue]) => (
-              <li key={day} className="flex justify-between">
-                <span>{day}</span>
-                <span>{formatCurrency(revenue, context.currency)}</span>
-              </li>
-            ))}
-            {last30Days.length === 0 ? (
-              <li className="text-muted-foreground">Todavía no hay ventas.</li>
-            ) : null}
-          </ul>
+        <CardContent className="flex flex-col gap-4">
+          {last30Days.length > 0 ? (
+            <>
+              <BarChart
+                data={[...last30Days].reverse().map(([day, revenue]) => ({ label: day, value: revenue }))}
+                formatValue={(v) => formatCurrency(v, context.currency)}
+              />
+              <Table>
+                <TableBody>
+                  {last30Days.map(([day, revenue]) => (
+                    <TableRow key={day}>
+                      <TableCell className="text-muted-foreground">{day}</TableCell>
+                      <TableCell className="text-right">{formatCurrency(revenue, context.currency)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground">Todavía no hay ventas.</p>
+          )}
         </CardContent>
       </Card>
 
@@ -100,19 +125,28 @@ export default async function ReportesPage({
           <CardTitle>Productos más vendidos (todo el tiempo)</CardTitle>
         </CardHeader>
         <CardContent>
-          <ul className="flex flex-col gap-1 text-sm">
-            {topProducts.map(([name, data]) => (
-              <li key={name} className="flex justify-between">
-                <span>
-                  {name} ({data.quantity} unidades)
-                </span>
-                <span>{formatCurrency(data.revenue, context.currency)}</span>
-              </li>
-            ))}
-            {topProducts.length === 0 ? (
-              <li className="text-muted-foreground">Todavía no hay ventas.</li>
-            ) : null}
-          </ul>
+          {topProducts.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Producto</TableHead>
+                  <TableHead className="text-right">Unidades</TableHead>
+                  <TableHead className="text-right">Ingresos</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topProducts.map(([name, data]) => (
+                  <TableRow key={name}>
+                    <TableCell className="whitespace-normal">{name}</TableCell>
+                    <TableCell className="text-right">{data.quantity}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(data.revenue, context.currency)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <EmptyState icon={BarChart3Icon} title="Todavía no hay ventas" />
+          )}
         </CardContent>
       </Card>
     </div>

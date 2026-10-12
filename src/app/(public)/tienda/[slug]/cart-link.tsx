@@ -12,7 +12,7 @@ export function CartLink({ storeSlug }: { storeSlug: string }) {
     <Link
       href={`/tienda/${storeSlug}/carrito`}
       aria-label={`Carrito, ${count} ${count === 1 ? "artículo" : "artículos"}`}
-      className="relative flex size-10 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+      className="relative flex size-11 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
     >
       <ShoppingBagIcon className="size-5" />
       {count > 0 ? (

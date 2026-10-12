@@ -34,7 +34,10 @@ export function Breadcrumbs() {
   });
 
   return (
-    <nav aria-label="Ruta de navegación" className="flex items-center gap-1.5 text-sm text-muted-foreground">
+    <nav
+      aria-label="Ruta de navegación"
+      className="flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground"
+    >
       <Link href={base} className="hover:text-foreground">
         Panel
       </Link>
