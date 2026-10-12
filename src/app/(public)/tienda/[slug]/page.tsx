@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { getPublicStore } from "@/lib/catalog/get-public-store";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/currency";
+import { Hero } from "@/components/public/hero";
 import { CatalogFilters } from "./catalog-filters";
 
 type SearchParams = {
@@ -98,9 +99,13 @@ export default async function CatalogoPage({
     ),
   ) as string[];
 
+  const isLandingView = !q && !category && !size && !color && page === 1;
+
   return (
     <div className="flex flex-col gap-6">
-      {store.description ? <p className="text-muted-foreground">{store.description}</p> : null}
+      {isLandingView ? (
+        <Hero storeName={store.name} description={store.description} coverImageUrl={store.coverImageUrl} />
+      ) : null}
 
       <Suspense>
         <CatalogFilters
