@@ -30,6 +30,7 @@ export function CatalogFilters({
     const next = new URLSearchParams(searchParams.toString());
     if (value) next.set(key, value);
     else next.delete(key);
+    next.delete("page");
     router.push(`/tienda/${storeSlug}?${next.toString()}`);
   }
 

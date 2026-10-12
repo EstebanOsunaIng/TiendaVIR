@@ -92,6 +92,7 @@ export type Database = {
           customer_note: string | null
           customer_phone: string
           id: string
+          requester_ip: unknown
           status: Database["public"]["Enums"]["order_request_status"]
           store_id: string
           total_estimate: number
@@ -103,6 +104,7 @@ export type Database = {
           customer_note?: string | null
           customer_phone: string
           id?: string
+          requester_ip?: unknown
           status?: Database["public"]["Enums"]["order_request_status"]
           store_id: string
           total_estimate: number
@@ -114,6 +116,7 @@ export type Database = {
           customer_note?: string | null
           customer_phone?: string
           id?: string
+          requester_ip?: unknown
           status?: Database["public"]["Enums"]["order_request_status"]
           store_id?: string
           total_estimate?: number
@@ -676,6 +679,7 @@ export type Database = {
           p_customer_note: string
           p_customer_phone: string
           p_items: Json
+          p_requester_ip?: unknown
           p_store_id: string
         }
         Returns: string
