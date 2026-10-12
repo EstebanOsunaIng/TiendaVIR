@@ -76,6 +76,7 @@ SaaS multi-tenant de gestión de inventario para tiendas de ropa: panel administ
 
 1. **Registro**: un usuario se registra en `/registro` indicando nombre de tienda → queda como `owner` de una tienda nueva (trigger `handle_new_user` en la base de datos).
 2. **Invitar empleados**: desde `/tienda-admin/<slug>/equipo` (solo `owner`), se genera un enlace de invitación (`/invitacion/<token>`); quien se registra desde ese enlace queda como `employee` de esa tienda, sin acceso a Reportes/Equipo/Configuración.
+   - **Recuperar contraseña**: `/olvide-password` envía un enlace (sin revelar si el correo existe); el enlace resuelve en `/restablecer-password` para definir una nueva.
 3. **Catálogo interno**: crear categorías, productos con imágenes y variantes (talla/color) en `/tienda-admin/<slug>/productos` y `/categorias`.
 4. **Inventario**: ajustes manuales de stock en `/tienda-admin/<slug>/inventario`, con historial de movimientos inmutable.
 5. **Catálogo público y pedidos**: `/tienda/<slug>` permite buscar/filtrar, agregar al carrito (persistido en `localStorage`) y enviar una solicitud de pedido, que se guarda en la base de datos y genera un enlace de WhatsApp prellenado hacia el número configurado en `/tienda-admin/<slug>/configuracion`.
@@ -89,6 +90,11 @@ SaaS multi-tenant de gestión de inventario para tiendas de ropa: panel administ
 - `src/lib/supabase/admin.ts` (service_role) solo puede importarse desde Server Actions/route handlers, nunca desde componentes cliente.
 - `register_sale` y `create_order_request` son `security definer` con validaciones explícitas de membership/pertenencia dentro de la función — no dependen únicamente de RLS.
 - `sales`/`sale_items`/`stock_movements` son ledgers inmutables: sin policy de `UPDATE`/`DELETE`; las correcciones se hacen con nuevos movimientos de ajuste.
+- `create_order_request` (abierta a `anon`) tiene límite de tasa: 5 solicitudes cada 10 minutos por IP+tienda, y 30 cada 10 minutos por tienda como respaldo si no hay IP disponible.
+
+## SEO
+
+`src/app/robots.ts` y `src/app/sitemap.ts` exponen `/robots.txt` y `/sitemap.xml`, permitiendo solo `/tienda/*` e indexando las tiendas activas y sus productos publicados. Cada tienda y producto público tiene `generateMetadata` propio (título/descripción/OG), útil para las previsualizaciones al compartir un enlace por WhatsApp.
 
 ## Pruebas
 
