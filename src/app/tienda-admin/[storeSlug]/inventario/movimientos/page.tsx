@@ -1,5 +1,8 @@
+import { HistoryIcon } from "lucide-react";
 import { requireStoreMember } from "@/lib/auth/require-role";
 import { createClient } from "@/lib/supabase/server";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { EmptyState } from "@/components/shared/empty-state";
 
 const MOVEMENT_LABELS: Record<string, string> = {
   purchase: "Compra",
@@ -26,34 +29,43 @@ export default async function MovimientosPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-medium">Historial de movimientos</h1>
-      <ul className="flex flex-col gap-1 text-sm">
-        {movements?.map((movement) => (
-          <li key={movement.id} className="flex items-center justify-between border-b py-2">
-            <div>
-              <p>
-                {movement.product_variants?.products?.name} · {movement.product_variants?.sku}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {MOVEMENT_LABELS[movement.type] ?? movement.type}
-                {movement.note ? ` — ${movement.note}` : ""}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className={movement.quantity < 0 ? "text-destructive" : "text-foreground"}>
-                {movement.quantity > 0 ? "+" : ""}
-                {movement.quantity}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {new Date(movement.created_at).toLocaleString()}
-              </p>
-            </div>
-          </li>
-        ))}
-        {movements?.length === 0 ? (
-          <li className="text-muted-foreground">Todavía no hay movimientos de inventario.</li>
-        ) : null}
-      </ul>
+      <h1 className="font-heading text-xl">Historial de movimientos</h1>
+      {movements && movements.length > 0 ? (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Producto</TableHead>
+              <TableHead>Tipo</TableHead>
+              <TableHead className="text-right">Cantidad</TableHead>
+              <TableHead>Fecha</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {movements.map((movement) => (
+              <TableRow key={movement.id}>
+                <TableCell className="whitespace-normal">
+                  {movement.product_variants?.products?.name} · {movement.product_variants?.sku}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {MOVEMENT_LABELS[movement.type] ?? movement.type}
+                  {movement.note ? ` — ${movement.note}` : ""}
+                </TableCell>
+                <TableCell
+                  className={`text-right font-medium ${movement.quantity < 0 ? "text-destructive" : "text-success"}`}
+                >
+                  {movement.quantity > 0 ? "+" : ""}
+                  {movement.quantity}
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {new Date(movement.created_at).toLocaleString()}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      ) : (
+        <EmptyState icon={HistoryIcon} title="Todavía no hay movimientos de inventario" />
+      )}
     </div>
   );
 }

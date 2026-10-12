@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { CopyIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +26,16 @@ export function InviteForm({ storeSlug }: { storeSlug: string }) {
     });
   }
 
+  async function handleCopy() {
+    if (!link) return;
+    try {
+      await navigator.clipboard.writeText(link);
+      toast.success("Enlace copiado");
+    } catch {
+      toast.error("No se pudo copiar el enlace");
+    }
+  }
+
   return (
     <form action={handleSubmit} className="flex flex-col gap-3">
       <div className="flex items-end gap-2">
@@ -37,10 +49,13 @@ export function InviteForm({ storeSlug }: { storeSlug: string }) {
       </div>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       {link ? (
-        <p className="text-sm text-muted-foreground">
-          Invitación creada. Envíasela por WhatsApp o correo:{" "}
-          <span className="break-all font-mono text-foreground">{link}</span>
-        </p>
+        <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/50 p-3">
+          <span className="flex-1 truncate font-mono text-xs text-foreground">{link}</span>
+          <Button type="button" variant="outline" size="sm" onClick={handleCopy}>
+            <CopyIcon />
+            Copiar
+          </Button>
+        </div>
       ) : null}
     </form>
   );

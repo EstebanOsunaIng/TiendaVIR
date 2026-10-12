@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { StatusBadge } from "@/components/shared/status-badge";
 import { updateOrderRequestStatus } from "@/actions/order-requests/update-order-request-status";
 import type { OrderRequestStatus } from "@/lib/constants";
 
@@ -40,17 +41,20 @@ export function StatusSelect({
   }
 
   return (
-    <Select value={status} onValueChange={handleChange} disabled={isPending}>
-      <SelectTrigger size="sm">
-        <SelectValue />
-      </SelectTrigger>
-      <SelectContent>
-        {Object.entries(STATUS_LABELS).map(([value, label]) => (
-          <SelectItem key={value} value={value}>
-            {label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div className="flex items-center gap-2">
+      <StatusBadge status={status} />
+      <Select value={status} onValueChange={handleChange} disabled={isPending}>
+        <SelectTrigger size="sm">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.entries(STATUS_LABELS).map(([value, label]) => (
+            <SelectItem key={value} value={value}>
+              {label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 }

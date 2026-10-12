@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { requireStoreMember } from "@/lib/auth/require-role";
 import { createClient } from "@/lib/supabase/server";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditProductForm } from "./edit-product-form";
 import { VariantsSection } from "./variants-section";
 import { ImagesSection } from "./images-section";
@@ -39,21 +40,33 @@ export default async function EditarProductoPage({
   ]);
 
   return (
-    <div className="flex flex-col gap-10">
-      <div>
-        <div className="mb-4 flex items-center justify-between">
-          <h1 className="text-lg font-medium">Editar producto</h1>
-          <DeleteProductButton storeSlug={storeSlug} productId={productId} />
-        </div>
-        <EditProductForm storeSlug={storeSlug} product={product} categories={categories ?? []} />
+    <div className="flex flex-col gap-6">
+      <div className="flex items-center justify-between">
+        <h1 className="font-heading text-xl">{product.name}</h1>
+        <DeleteProductButton storeSlug={storeSlug} productId={productId} productName={product.name} />
       </div>
-      <VariantsSection storeSlug={storeSlug} productId={productId} variants={variants ?? []} />
-      <ImagesSection
-        storeSlug={storeSlug}
-        storeId={context.storeId}
-        productId={productId}
-        images={images ?? []}
-      />
+
+      <Tabs defaultValue="info">
+        <TabsList>
+          <TabsTrigger value="info">Información básica</TabsTrigger>
+          <TabsTrigger value="variants">Variantes</TabsTrigger>
+          <TabsTrigger value="images">Imágenes</TabsTrigger>
+        </TabsList>
+        <TabsContent value="info" className="pt-6">
+          <EditProductForm storeSlug={storeSlug} product={product} categories={categories ?? []} />
+        </TabsContent>
+        <TabsContent value="variants" className="pt-6">
+          <VariantsSection storeSlug={storeSlug} productId={productId} variants={variants ?? []} />
+        </TabsContent>
+        <TabsContent value="images" className="pt-6">
+          <ImagesSection
+            storeSlug={storeSlug}
+            storeId={context.storeId}
+            productId={productId}
+            images={images ?? []}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

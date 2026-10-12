@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { AlertTriangleIcon, TrendingUpIcon, WalletIcon } from "lucide-react";
 import { requireStoreMember } from "@/lib/auth/require-role";
 import { createClient } from "@/lib/supabase/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { EmptyState } from "@/components/shared/empty-state";
 import { formatCurrency } from "@/lib/currency";
 
 export default async function DashboardHomePage({
@@ -51,25 +53,31 @@ export default async function DashboardHomePage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-xl font-medium">{context.storeName}</h1>
+      <h1 className="font-heading text-2xl">{context.storeName}</h1>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Ventas (30 días)</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <WalletIcon className="size-4 text-muted-foreground" />
+              Ventas (30 días)
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-medium">{formatCurrency(salesTotal, context.currency)}</p>
+            <p className="font-heading text-2xl">{formatCurrency(salesTotal, context.currency)}</p>
             <p className="text-sm text-muted-foreground">{salesCount} ventas</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <CardTitle>Stock bajo</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangleIcon className="size-4 text-muted-foreground" />
+              Stock bajo
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-medium">{lowStockVariants.length}</p>
+            <p className="font-heading text-2xl">{lowStockVariants.length}</p>
             <Link
               href={`/tienda-admin/${storeSlug}/inventario`}
               className="text-sm text-muted-foreground underline"
@@ -81,48 +89,70 @@ export default async function DashboardHomePage({
 
         <Card>
           <CardHeader>
-            <CardTitle>Rol</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUpIcon className="size-4 text-muted-foreground" />
+              Rol
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <Badge>{context.role === "owner" ? "Propietario" : "Empleado"}</Badge>
+            <p className="font-heading text-2xl">{context.role === "owner" ? "Propietario" : "Empleado"}</p>
           </CardContent>
         </Card>
       </div>
 
-      {lowStockVariants.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Alertas de stock bajo</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="flex flex-col gap-1 text-sm">
-              {lowStockVariants.slice(0, 10).map((v, i) => (
-                <li key={i}>
-                  {v.products?.name} — stock: {v.stock}
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      ) : null}
+      <Card>
+        <CardHeader>
+          <CardTitle>Alertas de stock bajo</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {lowStockVariants.length > 0 ? (
+            <Table>
+              <TableBody>
+                {lowStockVariants.slice(0, 10).map((v, i) => (
+                  <TableRow key={i}>
+                    <TableCell className="whitespace-normal">{v.products?.name}</TableCell>
+                    <TableCell className="text-right text-destructive">stock: {v.stock}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <p className="text-sm text-muted-foreground">Ningún producto está por debajo de su umbral.</p>
+          )}
+        </CardContent>
+      </Card>
 
-      {topProducts.length > 0 ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Productos más vendidos (30 días)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="flex flex-col gap-1 text-sm">
-              {topProducts.map(([name, revenue]) => (
-                <li key={name} className="flex justify-between">
-                  <span>{name}</span>
-                  <span>{formatCurrency(revenue, context.currency)}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-      ) : null}
+      <Card>
+        <CardHeader>
+          <CardTitle>Productos más vendidos (30 días)</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {topProducts.length > 0 ? (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Producto</TableHead>
+                  <TableHead className="text-right">Ingresos</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topProducts.map(([name, revenue]) => (
+                  <TableRow key={name}>
+                    <TableCell className="whitespace-normal">{name}</TableCell>
+                    <TableCell className="text-right">{formatCurrency(revenue, context.currency)}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <EmptyState
+              icon={TrendingUpIcon}
+              title="Todavía no hay ventas registradas"
+              description="Cuando registres ventas, aquí verás los productos más vendidos."
+            />
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

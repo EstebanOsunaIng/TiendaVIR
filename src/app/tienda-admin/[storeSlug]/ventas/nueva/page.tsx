@@ -30,7 +30,7 @@ export default async function NuevaVentaPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-medium">Nueva venta</h1>
+      <h1 className="font-heading text-xl">Nueva venta</h1>
       <NewSaleForm storeSlug={storeSlug} variants={available} currency={context.currency} />
     </div>
   );

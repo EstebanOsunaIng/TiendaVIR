@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Select,
   SelectContent,
@@ -40,66 +42,77 @@ export function NewProductForm({
   }
 
   return (
-    <form action={handleSubmit} className="flex max-w-lg flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="name">Nombre</Label>
-        <Input id="name" name="name" required />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="description">Descripción</Label>
-        <Input id="description" name="description" />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="categoryId">Categoría</Label>
-        <Select name="categoryId">
-          <SelectTrigger id="categoryId">
-            <SelectValue placeholder="Sin categoría" />
-          </SelectTrigger>
-          <SelectContent>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="basePrice">Precio base</Label>
-        <Input id="basePrice" name="basePrice" type="number" step="0.01" min="0" required />
-      </div>
-      <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="isPublished" defaultChecked />
-        Publicado en el catálogo
-      </label>
+    <form action={handleSubmit} className="flex max-w-lg flex-col gap-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Información básica</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="name">Nombre</Label>
+            <Input id="name" name="name" required />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="description">Descripción</Label>
+            <Input id="description" name="description" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="categoryId">Categoría</Label>
+            <Select name="categoryId">
+              <SelectTrigger id="categoryId">
+                <SelectValue placeholder="Sin categoría" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((category) => (
+                  <SelectItem key={category.id} value={category.id}>
+                    {category.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="basePrice">Precio base</Label>
+            <Input id="basePrice" name="basePrice" type="number" step="0.01" min="0" required />
+          </div>
+          <label className="flex items-center gap-2 text-sm">
+            <Checkbox name="isPublished" defaultChecked />
+            Publicado en el catálogo
+          </label>
+        </CardContent>
+      </Card>
 
-      <fieldset className="flex flex-col gap-3 rounded-lg border p-4">
-        <legend className="px-1 text-sm font-medium">Primera variante</legend>
-        <div className="flex flex-col gap-2">
-          <Label htmlFor="sku">SKU</Label>
-          <Input id="sku" name="sku" required />
-        </div>
-        <div className="flex gap-3">
-          <div className="flex flex-1 flex-col gap-2">
-            <Label htmlFor="size">Talla</Label>
-            <Input id="size" name="size" />
+      <Card>
+        <CardHeader>
+          <CardTitle>Primera variante</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="sku">SKU</Label>
+            <Input id="sku" name="sku" required />
           </div>
-          <div className="flex flex-1 flex-col gap-2">
-            <Label htmlFor="color">Color</Label>
-            <Input id="color" name="color" />
+          <div className="flex gap-3">
+            <div className="flex flex-1 flex-col gap-2">
+              <Label htmlFor="size">Talla</Label>
+              <Input id="size" name="size" />
+            </div>
+            <div className="flex flex-1 flex-col gap-2">
+              <Label htmlFor="color">Color</Label>
+              <Input id="color" name="color" />
+            </div>
           </div>
-        </div>
-        <div className="flex gap-3">
-          <div className="flex flex-1 flex-col gap-2">
-            <Label htmlFor="priceOverride">Precio distinto (opcional)</Label>
-            <Input id="priceOverride" name="priceOverride" type="number" step="0.01" min="0" />
+          <div className="flex gap-3">
+            <div className="flex flex-1 flex-col gap-2">
+              <Label htmlFor="priceOverride">Precio distinto (opcional)</Label>
+              <Input id="priceOverride" name="priceOverride" type="number" step="0.01" min="0" />
+            </div>
+            <div className="flex flex-1 flex-col gap-2">
+              <Label htmlFor="initialStock">Stock inicial</Label>
+              <Input id="initialStock" name="initialStock" type="number" min="0" defaultValue={0} required />
+            </div>
           </div>
-          <div className="flex flex-1 flex-col gap-2">
-            <Label htmlFor="initialStock">Stock inicial</Label>
-            <Input id="initialStock" name="initialStock" type="number" min="0" defaultValue={0} required />
-          </div>
-        </div>
-      </fieldset>
+        </CardContent>
+      </Card>
 
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
       <Button type="submit" disabled={isPending}>

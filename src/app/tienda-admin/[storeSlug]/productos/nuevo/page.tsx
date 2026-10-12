@@ -19,7 +19,7 @@ export default async function NuevoProductoPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-medium">Nuevo producto</h1>
+      <h1 className="font-heading text-xl">Nuevo producto</h1>
       <NewProductForm storeSlug={storeSlug} categories={categories ?? []} />
     </div>
   );

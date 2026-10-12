@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { updateProduct } from "@/actions/products/update-product";
 
 type Category = { id: string; name: string };
@@ -90,11 +91,11 @@ export function EditProductForm({
         />
       </div>
       <label className="flex items-center gap-2 text-sm">
-        <input type="checkbox" name="isPublished" defaultChecked={product.is_published} />
+        <Checkbox name="isPublished" defaultChecked={product.is_published} />
         Publicado en el catálogo
       </label>
       {error ? <p className="text-sm text-destructive">{error}</p> : null}
-      {saved ? <p className="text-sm text-muted-foreground">Guardado.</p> : null}
+      {saved ? <p className="text-sm text-success">Guardado.</p> : null}
       <Button type="submit" disabled={isPending} className="w-fit">
         {isPending ? "Guardando..." : "Guardar cambios"}
       </Button>
