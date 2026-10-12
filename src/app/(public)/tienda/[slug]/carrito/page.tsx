@@ -13,7 +13,7 @@ export default async function CarritoPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-medium">Tu carrito</h1>
+      <h1 className="font-heading text-2xl">Tu carrito</h1>
       <CheckoutForm
         storeId={store.id}
         storeName={store.name}

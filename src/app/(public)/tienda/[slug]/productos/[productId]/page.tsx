@@ -4,6 +4,7 @@ import { getPublicStore } from "@/lib/catalog/get-public-store";
 import { createClient } from "@/lib/supabase/server";
 import { formatCurrency } from "@/lib/currency";
 import { AddToCart } from "./add-to-cart";
+import { ProductGallery } from "./product-gallery";
 
 export async function generateMetadata({
   params,
@@ -78,22 +79,16 @@ export default async function ProductoPublicoPage({
 
   if (activeVariants.length === 0) notFound();
 
-  const images = [...product.product_images].sort((a, b) => a.position - b.position);
-  const mainImage = images[0]
-    ? supabase.storage.from("product-images").getPublicUrl(images[0].storage_path).data.publicUrl
-    : null;
+  const images = [...product.product_images]
+    .sort((a, b) => a.position - b.position)
+    .map((image) => supabase.storage.from("product-images").getPublicUrl(image.storage_path).data.publicUrl);
+  const mainImage = images[0] ?? null;
 
   return (
-    <div className="grid gap-6 md:grid-cols-2">
-      <div className="aspect-square overflow-hidden rounded-lg bg-muted">
-        {mainImage ? (
-          // eslint-disable-next-line @next/next/no-img-element -- URL pública de Supabase Storage
-          <img src={mainImage} alt={product.name} className="h-full w-full object-cover" />
-        ) : null}
-      </div>
+    <div className="grid gap-8 md:grid-cols-2">
+      <ProductGallery images={images} alt={product.name} />
       <div className="flex flex-col gap-4">
-        <h1 className="text-xl font-medium">{product.name}</h1>
-        <p className="text-lg">{formatCurrency(product.base_price, store.currency)}</p>
+        <h1 className="font-heading text-2xl">{product.name}</h1>
         {product.description ? (
           <p className="text-sm text-muted-foreground">{product.description}</p>
         ) : null}
@@ -102,6 +97,7 @@ export default async function ProductoPublicoPage({
           productId={product.id}
           productName={product.name}
           imageUrl={mainImage}
+          currency={store.currency}
           variants={activeVariants}
         />
       </div>
