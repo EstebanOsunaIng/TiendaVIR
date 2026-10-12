@@ -20,3 +20,19 @@ export const inviteMemberSchema = z.object({
   email: z.email("Correo inválido"),
 });
 export type InviteMemberInput = z.infer<typeof inviteMemberSchema>;
+
+export const requestPasswordResetSchema = z.object({
+  email: z.email("Correo inválido"),
+});
+export type RequestPasswordResetInput = z.infer<typeof requestPasswordResetSchema>;
+
+export const updatePasswordSchema = z
+  .object({
+    password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden",
+    path: ["confirmPassword"],
+  });
+export type UpdatePasswordInput = z.infer<typeof updatePasswordSchema>;

@@ -15,6 +15,11 @@ export default function LoginPage() {
           <LoginForm />
         </Suspense>
         <p className="text-center text-sm text-muted-foreground">
+          <Link href="/olvide-password" className="underline">
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
+        <p className="text-center text-sm text-muted-foreground">
           ¿No tienes cuenta?{" "}
           <Link href="/registro" className="underline">
             Crea tu tienda
