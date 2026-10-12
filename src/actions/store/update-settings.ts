@@ -14,6 +14,8 @@ export async function updateStoreSettings(
 
   const parsed = updateStoreSettingsSchema.safeParse({
     description: formData.get("description") ?? "",
+    logoUrl: formData.get("logoUrl") ?? "",
+    coverImageUrl: formData.get("coverImageUrl") ?? "",
     whatsappNumber: formData.get("whatsappNumber") ?? "",
     currency: formData.get("currency") ?? "USD",
     defaultLowStockThreshold: formData.get("defaultLowStockThreshold") ?? "5",
@@ -28,6 +30,8 @@ export async function updateStoreSettings(
     .from("stores")
     .update({
       description: parsed.data.description || null,
+      logo_url: parsed.data.logoUrl || null,
+      cover_image_url: parsed.data.coverImageUrl || null,
       whatsapp_number: parsed.data.whatsappNumber || null,
       updated_at: new Date().toISOString(),
     })

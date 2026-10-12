@@ -2,6 +2,8 @@ import { z } from "zod";
 
 export const updateStoreSettingsSchema = z.object({
   description: z.string().trim().optional(),
+  logoUrl: z.url("URL de logo inválida").optional().or(z.literal("")),
+  coverImageUrl: z.url("URL de portada inválida").optional().or(z.literal("")),
   whatsappNumber: z
     .string()
     .trim()

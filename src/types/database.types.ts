@@ -575,6 +575,7 @@ export type Database = {
       }
       stores: {
         Row: {
+          cover_image_url: string | null
           created_at: string
           created_by: string
           description: string | null
@@ -588,6 +589,7 @@ export type Database = {
           whatsapp_number: string | null
         }
         Insert: {
+          cover_image_url?: string | null
           created_at?: string
           created_by: string
           description?: string | null
@@ -601,6 +603,7 @@ export type Database = {
           whatsapp_number?: string | null
         }
         Update: {
+          cover_image_url?: string | null
           created_at?: string
           created_by?: string
           description?: string | null

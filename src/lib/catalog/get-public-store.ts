@@ -7,6 +7,7 @@ export type PublicStore = {
   slug: string;
   description: string | null;
   logoUrl: string | null;
+  coverImageUrl: string | null;
   whatsappNumber: string | null;
   currency: string;
 };
@@ -16,7 +17,9 @@ export const getPublicStore = cache(async (storeSlug: string): Promise<PublicSto
   const supabase = await createClient();
   const { data: store } = await supabase
     .from("stores")
-    .select("id, name, slug, description, logo_url, whatsapp_number, is_active, store_settings(currency)")
+    .select(
+      "id, name, slug, description, logo_url, cover_image_url, whatsapp_number, is_active, store_settings(currency)",
+    )
     .eq("slug", storeSlug)
     .eq("is_active", true)
     .single();
@@ -29,6 +32,7 @@ export const getPublicStore = cache(async (storeSlug: string): Promise<PublicSto
     slug: store.slug,
     description: store.description,
     logoUrl: store.logo_url,
+    coverImageUrl: store.cover_image_url,
     whatsappNumber: store.whatsapp_number,
     currency: store.store_settings?.currency ?? "USD",
   };

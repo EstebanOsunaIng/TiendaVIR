@@ -12,7 +12,11 @@ export default async function ConfiguracionPage({
   const supabase = await createClient();
 
   const [{ data: store }, { data: settings }] = await Promise.all([
-    supabase.from("stores").select("description, whatsapp_number").eq("id", context.storeId).single(),
+    supabase
+      .from("stores")
+      .select("description, logo_url, cover_image_url, whatsapp_number")
+      .eq("id", context.storeId)
+      .single(),
     supabase
       .from("store_settings")
       .select("currency, default_low_stock_threshold")
@@ -22,10 +26,13 @@ export default async function ConfiguracionPage({
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-medium">Configuración de {context.storeName}</h1>
+      <h1 className="font-heading text-xl">Configuración de {context.storeName}</h1>
       <SettingsForm
         storeSlug={storeSlug}
+        storeId={context.storeId}
         description={store?.description ?? null}
+        logoUrl={store?.logo_url ?? null}
+        coverImageUrl={store?.cover_image_url ?? null}
         whatsappNumber={store?.whatsapp_number ?? null}
         currency={settings?.currency ?? "USD"}
         defaultLowStockThreshold={settings?.default_low_stock_threshold ?? 5}
